@@ -1,0 +1,22 @@
+name: Apply update.zip and build APK
+on:
+  push:
+    paths: ['update.zip']
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Unzip update.zip into the project
+        run: |
+          if [ -f update.zip ]; then
+            unzip -o update.zip
+            rm update.zip
+            git config user.name "github-actions"
+            git config user.email "actions@github.com"
+            git add -A
+            git commit -m "Apply update [skip ci]" || true
+            git push
